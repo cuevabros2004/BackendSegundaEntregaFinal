@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cuevabros2004/BackendTerceraEntregaFinal.git"
+    "url": "git+https://github.com/cuevabros2004/TercerEntregaFinal.git"
   },
   "author": "Cueva Martín",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/cuevabros2004/BackendTerceraEntregaFinal.git/issues"
+    "url": "https://github.com/cuevabros2004/TercerEntregaFinal.git/issues"
   },
-  "homepage": "https://github.com/cuevabros2004/BackendTerceraEntregaFinal.git#readme",
+  "homepage": "https://github.com/cuevabros2004/TercerEntregaFinal.git#readme",
   "dependencies": {
     "crypto": "^1.0.1",
     "dotenv": "^16.0.3",
