@@ -7,7 +7,7 @@ import Container from '../container/containerFs.js'
 import ContainerBDRelacionalProd from '../container/containerBDRelacionalProd.js'
 import ContainerBDRelacionalCart from '../container/containerBDRelacionalCart.js'
 import { clienteSql } from '../db/clienteSql.js';
-import { clienteSqlLite3 } from '../db/clienteSql.js';
+//import { clienteSqlLite3 } from '../db/clienteSql.js';
 
 let prodTest
 let cartTest

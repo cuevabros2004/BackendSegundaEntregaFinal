@@ -5,7 +5,7 @@ import ContainerMongoDB from '../container/containerMongodb.js'
 import ContainerFirestore from '../container/containerFirestore.js'
 import ContainerBDRelacional from '../container/containerBDRelacionalProd.js'
 import { clienteSql } from '../db/clienteSql.js';
-import { clienteSqlLite3 } from '../db/clienteSql.js';
+//import { clienteSqlLite3 } from '../db/clienteSql.js';
 
 let prodTest
 
@@ -40,7 +40,9 @@ async function controladorPostProductos(req, res) {
 }
 
 async function controladorGetProductos(req, res) {
+    console.log(req)
     const productos = await prodTest.getAll();
+    console.log(productos)
     res.json(productos);
 }
 
