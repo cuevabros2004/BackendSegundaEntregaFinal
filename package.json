@@ -14,9 +14,9 @@
   "author": "Cueva Martín",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/cuevabros2004/BackendSegundaEntregaFinal.git/issues"
+    "url": "https://github.com/cuevabros2004/BackendTerceraEntregaFinal.git/issues"
   },
-  "homepage": "https://github.com/cuevabros2004/BackendSegundaEntregaFinal.git#readme",
+  "homepage": "https://github.com/cuevabros2004/BackendTerceraEntregaFinal.git#readme",
   "dependencies": {
     "crypto": "^1.0.1",
     "dotenv": "^16.0.3",
