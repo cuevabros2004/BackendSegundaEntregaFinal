@@ -36,7 +36,7 @@ const orders = new ContainerMongoDB('orders')
          nodemailer("Mailer", usuario.username, "Pedido #" + nrocomprobante + " en Proceso" , html, null)
  
          //Vacio el carrito
-          // cartTest.deleteByIdCart(req.session.user)
+         cartTest.deleteByIdCart(req.session.user)
          ///
          var f = new Date();
          const fecha = f.toLocaleString();
