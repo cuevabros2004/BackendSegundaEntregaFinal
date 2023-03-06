@@ -4,8 +4,13 @@ import Container from '../container/containerFs.js'
 import ContainerMongoDB from '../container/containerMongodb.js'
 import ContainerFirestore from '../container/containerFirestore.js'
 import ContainerBDRelacional from '../container/containerBDRelacionalProd.js'
-import { clienteSql } from '../db/clienteSql.js';
+//import { clienteSql } from '../db/clienteSql.js';
 //import { clienteSqlLite3 } from '../db/clienteSql.js';
+import ContainerUser from '../container/containerUser.js'
+import loggerError from '../pinoError.js';
+import loggerWarn from '../pinoWarn.js';
+
+const users = new ContainerUser('users')
 
 let prodTest
 
@@ -31,31 +36,41 @@ switch (PERSISTENCIA) {
 async function controladorPostProductos(req, res) {
     res.status(201);
     const objeto = req.body;
-
-   if(PERSISTENCIA!='firebase')
     objeto._id = randomUUID();
-    
-    const objetoInsert = await prodTest.save(objeto);
-    res.json(objetoInsert)
+    const resul = await prodTest.save(objeto);
+    if(resul.message)
+     loggerError(resul.message)
+    else
+     res.json(objeto)
 }
 
 async function controladorGetProductos(req, res) {
-    console.log(req)
     const productos = await prodTest.getAll();
-    console.log(productos)
-    res.json(productos);
+    if(productos)
+      if(productos.message)
+      loggerError(productos.message)
+      else
+      res.json(productos);
+    else 
+      res.json({"mensaje": "No hay producrtos"})
 }
 
 async function controladorGetProductosSegunId({ params: { id } }, res) {
     const productos = await prodTest.getById(id);
 
-    if (!productos) {
-        res.status(404);
-        res.json({ mensaje: `no se encontró producto con ese id (${id})` });
-    } else {
-        res.json(productos);
+        if (!productos) {
+            res.status(404);
+            loggerWarn(`no se encontró producto con ese id (${id})`)
+            res.json({ mensaje: `no se encontró producto con ese id (${id})` });
+        } else {    
+            if(productos.message)
+            loggerError(productos.message)
+           else {
+            res.json(productos);
+        }
     }
 }
+
 
 async function controladorPutProductosSegunId({ body, params: { id } }, res) {
 
@@ -63,20 +78,17 @@ async function controladorPutProductosSegunId({ body, params: { id } }, res) {
 
     if (!productos) {
         res.status(404);
+        loggerWarn(`no se encontró producto con ese id (${id})`)
         res.json({ mensaje: `no se encontró producto con ese id (${id})` });
     } else {
-       if(PERSISTENCIA!='firebase') {
+        if(productos.message)
+        loggerError(productos.message)
+       else {
         body._id = id;
-       }
-
-       if(PERSISTENCIA==='firebase') {
-        await prodTest.update(id, body);
-       } else {
         await prodTest.update(body);
-       }
-
         res.json(body);
     }
+  }
 
 }
 
@@ -84,23 +96,42 @@ async function controladorPutProductosSegunId({ body, params: { id } }, res) {
 async function controladorDeleteProductosSegunId({ params: { id } }, res) {
     const productos = await prodTest.deleteById(id);
 
-    if (productos === -1) {
+    if (!productos) {
         res.status(404);
+        loggerWarn(`no se encontró producto con ese id (${id})`)
         res.json({ mensaje: `no se encontró producto con ese id (${id})` });
     } else {
+        if(productos.message)
+        loggerError(productos.message)
+       else {
         res.json(productos);
     }
+   }
 }
 
-let administrador = true
 
-function soloParaAdmins(req, res, next) {
-    if (administrador) {
-        next()
-    } else {
-        res.status(403).json({error: "403", descripcion:  "ruta " + req.originalUrl + " método " + req.method + " no autorizada"})
-    }
+async function soloParaAdmins(req, res, next) {
+
+    const esAdmin = await users.esAdmin(req.session.user)
+
+if(req.session.user){
+   if(esAdmin.message) 
+    loggerError(esAdmin.message)
+   else {
+     if (await esAdmin) {
+         next()
+     } else {
+         loggerWarn("error: 403, descripcion:  ruta " + req.originalUrl + " método " + req.method + " no autorizada")
+         res.status(403).json({error: "403", descripcion:  "ruta " + req.originalUrl + " método " + req.method + " no autorizada"})
+     }
+   }
+} else {
+    loggerWarn("No hay un usuario logueado")
+    res.status(201).json({"mensaje": "No hay un usuario logueado"})
 }
+
+}
+
 
 
 export  {controladorGetProductos, controladorPostProductos, controladorGetProductosSegunId, controladorPutProductosSegunId,

@@ -114,13 +114,13 @@ class Container{
 
 
     //CARRITO
-    async deleteByIdCart(id){
+    async deleteByIdCart(usuario){
         try {
-            const carritoVaciado = await this.coleccion.updateOne({_id: id}, {$set: {"productos": []}})
+            const carritoVaciado = await this.coleccion.updateOne({usuario: usuario}, {$set: {"productos": []}})
             return carritoVaciado
         }
         catch(error){
-            error => { throw error}
+           return error
         } 
     }
 
@@ -137,6 +137,27 @@ class Container{
             error => { throw error}
         } 
     }
+
+    //PRODUCTOS y CARRITO
+    async getByIdUser(usuario){
+       
+        try {
+
+            const carrito = await this.coleccion.find({usuario: usuario}).toArray()
+
+            if(!carrito){
+                return null
+            }else{
+                return carrito [0];
+            }
+            
+        }
+
+        catch(error){
+            return error
+        } 
+
+     }
 
 
  }

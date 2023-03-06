@@ -4,6 +4,6 @@ import crearTablas from '../db/createTables.js'
 
 export const clienteSql = crearKnex(mysqlConfig)
 
-crearTablas()
+// crearTablas()
 
  

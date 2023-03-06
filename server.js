@@ -5,7 +5,12 @@ import express from 'express';
 import routerApiProducts from './routers/routerApiProducts.js'
 import routerApiShoppingCart from './routers/routerApiShoppingCart.js'
 import { Server as HttpServer } from 'http'
-
+import logIn from './logIn.js'
+import routerLogin from './routers/routerLogin.js'
+import routerApiBuy from './routers/routerApiBuy.js'
+import loggerInfo from './pinoInfo.js';
+import loggerError from './pinoError.js';
+import parseArgs from 'yargs/yargs'
 
 
 const servidor = express()
@@ -17,10 +22,16 @@ const httpServer = new HttpServer(servidor)
 servidor.use(express.json())
 servidor.use(express.urlencoded({ extended: true }))
 
+///LOGIN CON SESSION Y PASSPORT
+logIn(servidor);
+
 //Middlewares para los routers
 servidor.use('/api/products', routerApiProducts)
 servidor.use('/api/shoppingcart', routerApiShoppingCart)
+servidor.use('/', routerLogin)
+servidor.use('/api/buy', routerApiBuy)
 servidor.use(express.static('public'))
+servidor.use((err, req, res, next) => loggerError(err.message));
 
 //Si viene de una ruta no implementada
 servidor.all('*', (req, res) => {
@@ -28,31 +39,29 @@ servidor.all('*', (req, res) => {
 })
 
 
-const yargs = process.argv.slice(2)
 
-let puerto
+const yargs = parseArgs(process.argv.slice(2))
 
-if(yargs[0] === 'cluster' || yargs[0] === 'fork')   
-  puerto = PUERTO_POR_DEFECTO
-else
-  puerto = yargs[0] ?? PUERTO_POR_DEFECTO
+const argv = yargs.alias({p: 'port'}).default({port: PUERTO_POR_DEFECTO}).argv
+
+const puerto = argv.port
 
 
 
-
+function conectar_mongoose(){
+try {
+  const mongo = mongoose.connect(STRING_CONEXION_MONGO + USUARIO_CONEXION_MONGO + ':' + PASSWORD_CONEXION_MONGO + BD_MONGO, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  console.log("Connected DB");
+} catch (error) {
+  console.log(`Error en conexión de Base de datos: ${error}`);
+}
+}
 
 function conectar() {
-
-  try {
-    const mongo = mongoose.connect(STRING_CONEXION_MONGO + USUARIO_CONEXION_MONGO + ':' + PASSWORD_CONEXION_MONGO + BD_MONGO, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log("Connected DB");
-  } catch (error) {
-    console.log(`Error en conexión de Base de datos: ${error}`);
-  }
-
+  conectar_mongoose()
   return new Promise((resolve, reject) => {
     const servidorConectado = httpServer.listen(puerto, () => {
       resolve(servidorConectado)

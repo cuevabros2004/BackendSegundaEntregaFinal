@@ -11,6 +11,7 @@ dotenv.config({
        
 })
 
+
 export const STRING_CONEXION_MONGO = process.env.STRING_CONEXION_MONGO
 export const USUARIO_CONEXION_MONGO = process.env.USUARIO_CONEXION_MONGO
 export const PASSWORD_CONEXION_MONGO = process.env.PASSWORD_CONEXION_MONGO
@@ -22,6 +23,10 @@ export const TTL=process.env.TTL
 export const SERVER=process.env.SERVER
 export const MODO_POR_DEFECTO=process.env.MODO_POR_DEFECTO
 export const PUERTO_POR_DEFECTO=process.env.PUERTO_POR_DEFECTO
-
- 
- 
+export const SALTENV=process.env.SALTENV
+export const TIPO_USUARIO_POR_DEFECTO=process.env.TIPO_USUARIO_POR_DEFECT
+export const SERVICEEMAIL=process.env.SERVICEEMAIL
+export const PORTEMAIL=process.env.PORTEMAIL
+export const EMAILADMIN=process.env.EMAILADMIN
+export const PASSWORDADMIN=process.env.PASSWORDADMIN
+export const USUARIOADMIN=process.env.USUARIOADMIN
